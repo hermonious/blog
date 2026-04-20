@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Space Grotesk", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-serif: "Noto Serif SC", "Songti SC", "Source Han Serif SC", serif;
+}
+
+:root {
+  color-scheme: light;
+  --page-bg: #f5efe4;
+  --page-bg-alt: #efe1c6;
+  --surface: rgba(255, 250, 241, 0.72);
+  --surface-strong: rgba(255, 248, 236, 0.9);
+  --border-soft: rgba(87, 64, 40, 0.14);
+  --ink-strong: #2c2118;
+  --ink: rgba(44, 33, 24, 0.82);
+  --ink-muted: rgba(44, 33, 24, 0.58);
+  --accent: #b84d2b;
+  --accent-soft: rgba(184, 77, 43, 0.12);
+  --shadow-soft: 0 18px 60px rgba(88, 57, 33, 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(184, 77, 43, 0.14), transparent 34%),
+    radial-gradient(circle at top right, rgba(212, 159, 64, 0.16), transparent 30%),
+    linear-gradient(180deg, var(--page-bg), var(--page-bg-alt));
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(rgba(87, 64, 40, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(87, 64, 40, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent);
+}
+
+::selection {
+  color: white;
+  background: rgba(184, 77, 43, 0.78);
+}
+
+a {
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+.shell-card {
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-soft);
+}
+
+.eyebrow {
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.article-rich {
+  font-size: 1.05rem;
+  line-height: 1.95;
+}
+
+.article-rich :where(h2, h3, h4) {
+  margin-top: 2.4rem;
+  margin-bottom: 0.9rem;
+  color: var(--ink-strong);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.article-rich :where(h2) {
+  font-size: 1.8rem;
+}
+
+.article-rich :where(h3) {
+  font-size: 1.35rem;
+}
+
+.article-rich :where(p, ul, ol, blockquote, pre, table) {
+  margin-block: 1rem 1.25rem;
+}
+
+.article-rich :where(ul, ol) {
+  padding-left: 1.4rem;
+}
+
+.article-rich :where(li + li) {
+  margin-top: 0.45rem;
+}
+
+.article-rich :where(code):not(pre code) {
+  border: 1px solid rgba(64, 46, 30, 0.12);
+  border-radius: 0.45rem;
+  background: rgba(255, 245, 233, 0.9);
+  padding: 0.18rem 0.42rem;
+  font-size: 0.92em;
+}
+
+.article-rich :where(pre) {
+  overflow-x: auto;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: #1d1a18;
+  padding: 1rem;
+}
+
+.article-rich :where(blockquote) {
+  border-left: 3px solid var(--accent);
+  padding: 0.2rem 0 0.2rem 1rem;
+  color: var(--ink-muted);
+}
+
+.article-rich :where(img) {
+  border-radius: 1.25rem;
+}
+
+.article-rich :where(hr) {
+  border: 0;
+  border-top: 1px solid rgba(64, 46, 30, 0.12);
+  margin-block: 2rem;
+}

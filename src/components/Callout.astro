@@ -1,0 +1,19 @@
+---
+interface Props {
+  title?: string;
+  tone?: "warm" | "calm";
+}
+
+const { title = "小提示", tone = "warm" } = Astro.props;
+const toneClass =
+  tone === "calm"
+    ? "border-sky-200 bg-sky-50/80 text-sky-950"
+    : "border-orange-200 bg-orange-50/80 text-orange-950";
+---
+
+<aside class:list={["my-8 rounded-[1.4rem] border px-5 py-4", toneClass]}>
+  <p class="font-sans text-sm font-semibold uppercase tracking-[0.18em]">{title}</p>
+  <div class="mt-3 leading-7">
+    <slot />
+  </div>
+</aside>

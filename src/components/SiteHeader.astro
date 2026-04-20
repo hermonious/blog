@@ -1,0 +1,59 @@
+---
+import { withBase } from "@/utils/links";
+import { siteConfig } from "@/config/site";
+
+const navItems = [
+  { path: "", label: "首页" },
+  { path: "posts/", label: "文章" },
+  { path: "archives/", label: "归档" },
+  { path: "tags/", label: "标签" },
+  { path: "about/", label: "关于" }
+];
+
+const pathname = Astro.url.pathname;
+const homeHref = withBase();
+---
+
+<header class="sticky top-0 z-30 px-4 pt-4 sm:px-6 lg:px-8">
+  <div class="shell-card mx-auto flex max-w-6xl items-center justify-between rounded-full px-4 py-3 sm:px-6">
+    <a class="group inline-flex items-center gap-3 text-sm font-medium text-[var(--ink-strong)] no-underline" href={homeHref}>
+      <span class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)] text-base font-bold text-white transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105">
+        北
+      </span>
+      <span class="hidden sm:block">
+        <span class="block text-base tracking-tight">{siteConfig.name}</span>
+        <span class="block text-xs text-[var(--ink-muted)]">{siteConfig.tagline}</span>
+      </span>
+    </a>
+
+    <nav aria-label="主导航">
+      <ul class="flex items-center gap-1 rounded-full bg-white/35 p-1">
+        {
+          navItems.map((item) => {
+            const href = withBase(item.path);
+            const isActive =
+              item.path === ""
+                ? pathname === homeHref
+                : pathname.startsWith(href);
+
+            return (
+              <li>
+                <a
+                  class:list={[
+                    "inline-flex rounded-full px-4 py-2 text-sm font-medium no-underline transition",
+                    isActive
+                      ? "bg-white text-[var(--ink-strong)] shadow-sm"
+                      : "text-[var(--ink-muted)] hover:bg-white/60 hover:text-[var(--ink-strong)]"
+                  ]}
+                  href={href}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

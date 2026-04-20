@@ -1,0 +1,128 @@
+---
+import { getCollection } from "astro:content";
+import MainLayout from "@/layouts/MainLayout.astro";
+import PostCard from "@/components/PostCard.astro";
+import { siteConfig } from "@/config/site";
+import { getAllTags, getSortedPosts } from "@/utils/blog";
+import { withBase } from "@/utils/links";
+
+const posts = getSortedPosts(await getCollection("blog"));
+const featuredPost = posts.find((post) => post.data.featured) ?? posts[0];
+const latestPosts = posts.slice(0, 6);
+const tags = getAllTags(posts).slice(0, 8);
+const postsHref = withBase("posts/");
+const aboutHref = withBase("about/");
+const featuredHref = withBase(`posts/${featuredPost.id}/`);
+---
+
+<MainLayout
+  title={siteConfig.name}
+  description={siteConfig.description}
+>
+  <section class="px-4 pb-6 pt-8 sm:px-6 lg:px-8">
+    <div class="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+      <div class="shell-card relative overflow-hidden rounded-[2.25rem] px-6 py-8 sm:px-8 sm:py-10">
+        <div class="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_top,rgba(184,77,43,0.2),transparent_58%)]"></div>
+        <p class="eyebrow text-xs font-semibold text-[var(--accent)]">{siteConfig.hero.eyebrow}</p>
+        <h1 class="mt-4 max-w-3xl font-sans text-4xl font-bold tracking-tight text-[var(--ink-strong)] sm:text-5xl">
+          {siteConfig.hero.title}
+        </h1>
+        <p class="mt-5 max-w-2xl text-lg leading-8 text-[var(--ink-muted)]">
+          {siteConfig.hero.intro}
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            class="inline-flex items-center rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white no-underline transition hover:-translate-y-0.5 hover:shadow-lg"
+            href={postsHref}
+          >
+            开始看文章
+          </a>
+          <a
+            class="inline-flex items-center rounded-full border border-[var(--border-soft)] bg-white/70 px-5 py-3 text-sm font-semibold text-[var(--ink-strong)] no-underline transition hover:bg-white"
+            href={aboutHref}
+          >
+            查看关于页
+          </a>
+        </div>
+      </div>
+
+      <aside class="shell-card rounded-[2.25rem] p-6">
+        <p class="eyebrow text-xs font-semibold text-[var(--accent)]">Featured Post</p>
+        <h2 class="mt-4 font-sans text-2xl font-semibold tracking-tight text-[var(--ink-strong)]">
+          <a class="no-underline" href={featuredHref}>{featuredPost.data.title}</a>
+        </h2>
+        <p class="mt-3 leading-7 text-[var(--ink-muted)]">{featuredPost.data.description}</p>
+        <div class="mt-6 space-y-3 text-sm text-[var(--ink-muted)]">
+          <div class="flex items-center justify-between rounded-2xl bg-white/50 px-4 py-3">
+            <span>文章数</span>
+            <strong class="font-sans text-lg text-[var(--ink-strong)]">{posts.length}</strong>
+          </div>
+          <div class="flex items-center justify-between rounded-2xl bg-white/50 px-4 py-3">
+            <span>标签数</span>
+            <strong class="font-sans text-lg text-[var(--ink-strong)]">{getAllTags(posts).length}</strong>
+          </div>
+          <div class="rounded-2xl bg-white/50 px-4 py-4">
+            <p class="font-medium text-[var(--ink-strong)]">适合用来写什么？</p>
+            <p class="mt-2 leading-7">
+              技术文章、项目日志、读书笔记、旅行记录、年度总结、长期专题。
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-6xl">
+      <div class="mb-6 flex items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow text-xs font-semibold text-[var(--accent)]">Latest</p>
+          <h2 class="mt-3 font-sans text-3xl font-semibold tracking-tight text-[var(--ink-strong)]">
+            最近更新
+          </h2>
+        </div>
+        <a class="text-sm font-semibold text-[var(--accent)] no-underline" href={postsHref}>
+          查看全部文章 →
+        </a>
+      </div>
+
+      <div class="grid gap-5 lg:grid-cols-2">
+        {latestPosts.map((post) => <PostCard post={post} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+      <div class="shell-card rounded-[2rem] p-6 sm:p-8">
+        <p class="eyebrow text-xs font-semibold text-[var(--accent)]">Writing Notes</p>
+        <h2 class="mt-3 font-sans text-3xl font-semibold tracking-tight text-[var(--ink-strong)]">
+          这套模板的设计取向
+        </h2>
+        <ul class="mt-5 space-y-4 text-[var(--ink-muted)]">
+          <li>内容优先，页面结构尽量稳定，不让样式干扰阅读。</li>
+          <li>保留足够强的视觉识别度，不做千篇一律的白底卡片站。</li>
+          <li>路由、归档、标签、RSS 和站点地图都是开箱即用。</li>
+        </ul>
+      </div>
+
+      <div class="shell-card rounded-[2rem] p-6 sm:p-8">
+        <p class="eyebrow text-xs font-semibold text-[var(--accent)]">Topics</p>
+        <h2 class="mt-3 font-sans text-3xl font-semibold tracking-tight text-[var(--ink-strong)]">
+          常写的话题
+        </h2>
+        <div class="mt-6 flex flex-wrap gap-3">
+          {tags.map((tag) => (
+            <a
+              class="inline-flex items-center rounded-full border border-[var(--border-soft)] bg-white/60 px-4 py-2 text-sm font-medium text-[var(--ink-strong)] no-underline transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+              href={withBase(`tags/${encodeURIComponent(tag)}/`)}
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</MainLayout>

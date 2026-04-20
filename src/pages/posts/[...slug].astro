@@ -1,0 +1,96 @@
+---
+import { getCollection, render } from "astro:content";
+import MainLayout from "@/layouts/MainLayout.astro";
+import TagPill from "@/components/TagPill.astro";
+import { estimateReadingTime, formatDate, getSortedPosts, type BlogPost } from "@/utils/blog";
+import { withBase } from "@/utils/links";
+
+export async function getStaticPaths() {
+  const posts = getSortedPosts(await getCollection("blog"));
+
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      newerPost: index > 0 ? posts[index - 1] : null,
+      olderPost: index < posts.length - 1 ? posts[index + 1] : null
+    }
+  }));
+}
+
+interface Props {
+  post: BlogPost;
+  newerPost: BlogPost | null;
+  olderPost: BlogPost | null;
+}
+
+const { post, newerPost, olderPost } = Astro.props;
+const { Content } = await render(post);
+const readingTime = estimateReadingTime(post.body ?? "");
+const newerHref = newerPost ? withBase(`posts/${newerPost.id}/`) : undefined;
+const olderHref = olderPost ? withBase(`posts/${olderPost.id}/`) : undefined;
+---
+
+<MainLayout title={post.data.title} description={post.data.description}>
+  <section class="px-4 pb-8 pt-10 sm:px-6 lg:px-8">
+    <article class="mx-auto max-w-4xl">
+      <div class="shell-card rounded-[2.25rem] px-6 py-8 sm:px-10 sm:py-10">
+        <p class="eyebrow text-xs font-semibold text-[var(--accent)]">Essay</p>
+        <h1 class="mt-4 font-sans text-4xl font-bold tracking-tight text-[var(--ink-strong)] sm:text-5xl">
+          {post.data.title}
+        </h1>
+        <p class="mt-4 text-lg leading-8 text-[var(--ink-muted)]">{post.data.description}</p>
+
+        <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--ink-muted)]">
+          <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+          <span>·</span>
+          <span>{readingTime} 分钟阅读</span>
+          {post.data.updatedDate && (
+            <>
+              <span>·</span>
+              <span>更新于 {formatDate(post.data.updatedDate)}</span>
+            </>
+          )}
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-2">
+          {post.data.tags.map((tag) => <TagPill tag={tag} />)}
+        </div>
+      </div>
+
+      <div class="shell-card mt-6 rounded-[2.25rem] px-6 py-8 sm:px-10 sm:py-10">
+        <div class="article-rich">
+          <Content />
+        </div>
+      </div>
+
+      <nav class="mt-6 grid gap-4 md:grid-cols-2">
+        <a
+          class:list={[
+            "shell-card rounded-[1.75rem] p-5 no-underline transition hover:bg-[var(--surface-strong)]",
+            !newerPost && "pointer-events-none opacity-50"
+          ]}
+          href={newerHref}
+        >
+          <p class="text-sm text-[var(--ink-muted)]">较新的文章</p>
+          <p class="mt-2 font-sans text-xl font-semibold text-[var(--ink-strong)]">
+            {newerPost ? newerPost.data.title : "已经是最新一篇"}
+          </p>
+        </a>
+
+        <a
+          class:list={[
+            "shell-card rounded-[1.75rem] p-5 no-underline transition hover:bg-[var(--surface-strong)]",
+            !olderPost && "pointer-events-none opacity-50"
+          ]}
+          href={olderHref}
+        >
+          <p class="text-sm text-[var(--ink-muted)]">更早的文章</p>
+          <p class="mt-2 font-sans text-xl font-semibold text-[var(--ink-strong)]">
+            {olderPost ? olderPost.data.title : "已经是最早一篇"}
+          </p>
+        </a>
+      </nav>
+    </article>
+  </section>
+</MainLayout>

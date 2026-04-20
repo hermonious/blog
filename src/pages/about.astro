@@ -1,0 +1,36 @@
+---
+import { siteConfig } from "@/config/site";
+import MainLayout from "@/layouts/MainLayout.astro";
+---
+
+<MainLayout title="关于" description={`介绍 ${siteConfig.author}、站点主题方向和写作方式。`}>
+  <section class="px-4 pb-8 pt-10 sm:px-6 lg:px-8">
+    <div class="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.78fr_1.22fr]">
+      <aside class="shell-card rounded-[2.25rem] p-6 sm:p-8">
+        <p class="eyebrow text-xs font-semibold text-[var(--accent)]">About The Author</p>
+        <h1 class="mt-4 font-sans text-4xl font-bold tracking-tight text-[var(--ink-strong)]">
+          {siteConfig.about.headline}
+        </h1>
+        <p class="mt-4 leading-8 text-[var(--ink-muted)]">
+          {siteConfig.about.intro}
+        </p>
+      </aside>
+
+      <article class="shell-card rounded-[2.25rem] px-6 py-8 sm:px-10 sm:py-10">
+        <div class="article-rich">
+          {siteConfig.about.sections.map((section) => (
+            <>
+              <h2>{section.title}</h2>
+              <p>{section.body}</p>
+            </>
+          ))}
+
+          <h2>后续可以补充的内容</h2>
+          <ul>
+            {siteConfig.about.checklist.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+</MainLayout>
